@@ -9,9 +9,6 @@ def is_root() -> bool:
 
 def cmd(c: str, err_exit: bool = True):
     print(c)
-    # todo
-    if c.startswith('system'):
-        return
     ret = os.system(c)
     if ret == 0:
         return
@@ -58,11 +55,8 @@ def write_file(filename: str | Path, data: str, re_name: bool = True):
     if not re_name:
         if filename.exists():
             raise FileExistsError(f"[Errno 17] File exists: '{filename}'")
-    # todo
-    try:
-        filename.parent.mkdir(parents=True, exist_ok=True)
-    except Exception:
-        pass
+
+    filename.parent.mkdir(parents=True, exist_ok=True)
 
     for i in range(1000):
         if i == 0:
@@ -73,9 +67,6 @@ def write_file(filename: str | Path, data: str, re_name: bool = True):
             continue
 
         print(f'Write to: {t_filename}')
-        # todo
-        if str(t_filename).startswith('/usr/lib/systemd'):
-            return
         with open(t_filename, 'w') as f:
             f.write(data)
         break
