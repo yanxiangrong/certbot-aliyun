@@ -1,14 +1,18 @@
 import argparse
+import subprocess
 import sys
 
 import app
 from .consts import *
 from .utils import *
 
+run_maim_file = Path(sys.argv[0])
 service_filename = f'{Path(NAME).stem}.service'
 timer_filename = f'{Path(NAME).stem}.timer'
 config_filename = Path(INSTALL_CONFIG_PATH).joinpath(CONFIG_FILENAME)
 bin_filename = Path(INSTALL_BIN_PATH).joinpath(Path(NAME).name)
+venv_dir = run_maim_file.parent.joinpath(VENV_DIR_NAME)
+venv_python = venv_dir.joinpath(BIN_NAME).joinpath(PYTHON_NAME)
 
 
 def check_root():
@@ -55,7 +59,8 @@ def gen_config_interactive(filename: str | Path):
 
 def gen_service(config_path: str, save_dir: str = '.'):
     filename = Path(save_dir).joinpath(service_filename)
-    data = EXAMPLE_SERVICE_FILE.format(exec=f'{Path(__file__).absolute()} -c {Path(config_path).absolute()}')
+    data = EXAMPLE_SERVICE_FILE.format(wd=f'{run_maim_file.parent}',
+                                       exec=f'{run_maim_file.absolute()} -c {Path(config_path).absolute()}')
     write_file(filename, data, re_name=False)
 
 
@@ -80,12 +85,14 @@ def gen_systemd(config_path: str, is_install: bool = False, user: bool = False):
 
 def install(interactive=False):
     check_root()
-    run_file = Path(sys.argv[0])
 
-    copy(run_file.parent, INSTALL_DEP_PATH)
-    link(Path(INSTALL_DEP_PATH).joinpath(run_file.name), bin_filename)
-    print(f'chmod 755 {run_file}')
-    bin_filename.chmod(755)
+    copy(run_maim_file.parent, INSTALL_DEP_PATH)
+    link_file = Path(INSTALL_DEP_PATH).joinpath(run_maim_file.name)
+    link(link_file, bin_filename)
+    print(f'chmod 755 {run_maim_file}')
+    link_file.chmod(755)
+
+    install_venv(Path(INSTALL_DEP_PATH))
 
     if interactive:
         gen_config_interactive(config_filename)
@@ -119,9 +126,27 @@ def uninstall():
     Systemctl.reload()
 
 
+def install_venv(install_dir: Path = run_maim_file.parent):
+    if venv_dir.exists():
+        remove(venv_dir)
+
+    cmd(f'{sys.executable} -m venv {install_dir.joinpath(VENV_DIR_NAME)}')
+    cmd(f'{install_dir.joinpath(VENV_DIR_NAME).joinpath(BIN_NAME).joinpath(PIP_NAME)}'
+        f' install -r {install_dir.joinpath(REQUIREMENTS_NAME)}')
+
+
+def run():
+    if venv_python.absolute() != Path(sys.executable):
+        if not venv_dir.exists():
+            install_venv()
+        ret = subprocess.run([str(venv_python.absolute())] + sys.argv)
+        exit(ret.returncode)
+    app.main()
+
+
 def main():
     parser = argparse.ArgumentParser(
-        prog=f'python {Path(__file__).name}',
+        prog=f'python {run_maim_file.name}',
         description='自动申请 SSL 证书和续签，使用阿里云 DNS 验证。')
 
     sel = ['gen-systemd', 'gen-systemd-i', 'gen-systemd-i-u', 'gen-config', 'gen-config-i', 'install', 'install-i',
@@ -132,7 +157,7 @@ def main():
 
     match args.option:
         case None:
-            app.main()
+            run()
         case 'gen-config':
             gen_config(args.config)
         case 'gen-config-i':

@@ -39,7 +39,7 @@ def save_key_comp(save_dir: str, pkey_pem: bytes, fullchain_pem: bytes):
         f.write(fullchain_pem)
 
 
-def load_key_comp(save_dir: str, ):
+def load_key_comp(save_dir: str,):
     pkey_file = Path(save_dir).joinpath(PKEY_FILENAME)
     fullchain_file = Path(save_dir).joinpath(FULLCHAIN_FILENAME)
     log.info(f'Load private key from {pkey_file}')
@@ -47,14 +47,14 @@ def load_key_comp(save_dir: str, ):
         with open(pkey_file, 'rb') as f:
             pkey_pem = f.read()
     except FileNotFoundError as err:
-        log.error(f'File not found: {pkey_file}')
+        log.info(f'File not found: {pkey_file}')
         raise err
     log.info(f'Load fullchain from {fullchain_file}')
     try:
         with open(fullchain_file, 'rb') as f:
             fullchain_pem = f.read()
     except FileNotFoundError as err:
-        log.error(f'File not found: {fullchain_file}')
+        log.info(f'File not found: {fullchain_file}')
         raise err
 
     return pkey_pem, fullchain_pem
@@ -83,3 +83,6 @@ def main():
         save_key_comp(i_config.save_dir, pkey_pem, fullchain_pem)
 
     log.info('Done and exit')
+
+if __name__ == '__main__':
+    main()

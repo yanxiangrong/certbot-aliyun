@@ -9,7 +9,6 @@ from acme import challenges
 from acme import client
 from acme import crypto_util
 from acme import messages
-from acme import errors
 from acme.messages import RegistrationResource
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.asymmetric import rsa
@@ -57,7 +56,7 @@ class ACMEClient:
             pkey.generate_key(OpenSSL.crypto.TYPE_RSA, self.config.cert_pkey_bits)
             pkey_pem = OpenSSL.crypto.dump_privatekey(OpenSSL.crypto.FILETYPE_PEM,
                                                       pkey)
-        csr_pem = crypto_util.make_csr(pkey_pem, [domain_name, f'*.{domain_name}'])
+        csr_pem = crypto_util.make_csr(pkey_pem, [f'*.{domain_name}', domain_name])
         return pkey_pem, csr_pem
 
     def perform_dns01(self, domain: str, chl, order):
@@ -77,7 +76,7 @@ class ACMEClient:
             log.info('Poll and finalize')
             finalized_order = self.client.poll_and_finalize(order)
             dns_client.clean_challenge_dns(record_id)
-        except errors as err:
+        except Exception as err:
             dns_client.clean_challenge_dns(record_id)
             log.critical(err)
             exit(os.EX_SOFTWARE)

@@ -52,6 +52,7 @@ After=network.target network-online.target
 
 [Service]
 Type=idle
+WorkingDirectory={wd}
 ExecStart={exec}
 '''
 
@@ -73,3 +74,8 @@ SYSTEMD_DIR_USER = '~/.config/systemd/user/'
 INSTALL_CONFIG_PATH = f'/usr/local/etc/{NAME}/'
 INSTALL_BIN_PATH = '/usr/local/bin/'
 INSTALL_DEP_PATH = f'/usr/local/lib/{NAME}/'
+VENV_DIR_NAME = f'venv/'
+BIN_NAME = f'bin'
+PYTHON_NAME = f'python'
+PIP_NAME = f'pip'
+REQUIREMENTS_NAME = f'requirements.txt'

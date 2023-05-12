@@ -7,12 +7,16 @@ def is_root() -> bool:
     return os.geteuid() == 0
 
 
-def cmd(c: str):
+def cmd(c: str, err_exit: bool = True):
     print(c)
+    # todo
+    if c.startswith('system'):
+        return
     ret = os.system(c)
     if ret == 0:
         return
-    exit(ret)
+    if err_exit:
+        exit(ret)
 
 
 def remove(name: str | Path):
@@ -54,7 +58,11 @@ def write_file(filename: str | Path, data: str, re_name: bool = True):
     if not re_name:
         if filename.exists():
             raise FileExistsError(f"[Errno 17] File exists: '{filename}'")
-    filename.parent.mkdir(parents=True, exist_ok=True)
+    # todo
+    try:
+        filename.parent.mkdir(parents=True, exist_ok=True)
+    except Exception:
+        pass
 
     for i in range(1000):
         if i == 0:
@@ -65,6 +73,9 @@ def write_file(filename: str | Path, data: str, re_name: bool = True):
             continue
 
         print(f'Write to: {t_filename}')
+        # todo
+        if str(t_filename).startswith('/usr/lib/systemd'):
+            return
         with open(t_filename, 'w') as f:
             f.write(data)
         break
@@ -117,20 +128,20 @@ class Systemctl:
 
     @classmethod
     def reload(cls):
-        cmd(f'{cls.ctl} daemon-reload')
+        cmd(f'{cls.ctl} daemon-reload', err_exit=False)
 
     @classmethod
     def start(cls, dst):
-        cmd(f'{cls.ctl} start {dst}')
+        cmd(f'{cls.ctl} start {dst}', err_exit=False)
 
     @classmethod
     def stop(cls, dst):
-        cmd(f'{cls.ctl} stop {dst}')
+        cmd(f'{cls.ctl} stop {dst}', err_exit=False)
 
     @classmethod
     def enable(cls, dst):
-        cmd(f'{cls.ctl} enable {dst}')
+        cmd(f'{cls.ctl} enable {dst}', err_exit=False)
 
     @classmethod
     def disable(cls, dst):
-        cmd(f'{cls.ctl} disable {dst}')
+        cmd(f'{cls.ctl} disable {dst}', err_exit=False)
