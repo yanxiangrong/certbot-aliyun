@@ -7,7 +7,7 @@
 ```shell
 apt install python3-venv
 wget -O install.py https://github.com/yanxiangrong/certbot-aliyun/raw/main/script/install.py
-python install.py
+python3 install.py
 ```
 
 安装完成可以删除
