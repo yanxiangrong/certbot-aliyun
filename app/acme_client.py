@@ -1,6 +1,7 @@
 import json
 import logging
 import os
+import typing
 from pathlib import Path
 
 import OpenSSL
@@ -44,9 +45,9 @@ class ACMEClient:
         self.acc_file_path = Path(self.config.data_dir).joinpath(ACME_ACCOUNT_FILENAME)
         self.acc_key_path = Path(self.config.data_dir).joinpath(ACME_ACCOUNT_KEY_FILENAME)
 
-        self.acc_key: jose.JWKRSA | None = None
+        self.acc_key: typing.Optional[jose.JWKRSA] = None
 
-        self.client: client.ClientV2 | None = None
+        self.client: typing.Optional[client.ClientV2] = None
 
     def new_csr_comp(self, domain_name: str, pkey_pem=None):
         """Create certificate signing request."""

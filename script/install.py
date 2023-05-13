@@ -7,6 +7,7 @@ import sys
 import tarfile
 import tempfile
 import time
+import typing
 import urllib.error as error
 import urllib.request as request
 import urllib.response as response
@@ -14,6 +15,12 @@ from pathlib import Path
 
 USER = 'yanxiangrong'
 REPO = 'certbot-aliyun'
+MIN_VERSION = 0x030900F0
+MIN_VERSION_STR = '3.9'
+
+if sys.hexversion < MIN_VERSION:
+    print(f'需要在 Python 解释器版本 {MIN_VERSION_STR} 及以上运行！')
+    exit(os.EX_SOFTWARE)
 
 
 def retry(func):
@@ -44,7 +51,7 @@ def bytes_to_hum(n: int) -> str:
     return f'{n:.0f}{units[u]}'
 
 
-def print_progress_bar(val: int, size: int | None = None, is_end=False):
+def print_progress_bar(val: int, size: typing.Optional[int] = None, is_end=False):
     if size is None:
         proportion = 0
     else:

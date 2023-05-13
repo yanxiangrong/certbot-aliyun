@@ -1,5 +1,6 @@
 import os
 import shutil
+import typing
 from pathlib import Path
 
 
@@ -16,7 +17,7 @@ def cmd(c: str, err_exit: bool = True):
         exit(ret)
 
 
-def remove(name: str | Path):
+def remove(name: typing.Union[str, Path]):
     if isinstance(name, str):
         name = Path(name)
     try:
@@ -30,12 +31,12 @@ def remove(name: str | Path):
         print('Not found')
 
 
-def link(src: str | Path, dst: str | Path):
+def link(src: typing.Union[str, Path], dst: typing.Union[str, Path]):
     print(f'link {src} to {dst}')
     os.symlink(src, dst)
 
 
-def copy(src: str | Path, dst: str | Path):
+def copy(src: typing.Union[str, Path], dst: typing.Union[str, Path]):
     print(f'copy {src} to {dst}')
 
     if isinstance(src, str):
@@ -49,7 +50,7 @@ def copy(src: str | Path, dst: str | Path):
         shutil.copy(src, dst)
 
 
-def write_file(filename: str | Path, data: str, re_name: bool = True):
+def write_file(filename: typing.Union[str, Path], data: str, re_name: bool = True):
     if isinstance(filename, str):
         filename = Path(filename)
     if not re_name:

@@ -3,7 +3,7 @@
 
 安装
 ```shell
-curl -fsSL https://github.com/yanxiangrong/certbot-aliyun/raw/main/script/install.py -o install.py
+wget -O install.py https://github.com/yanxiangrong/certbot-aliyun/raw/main/script/install.py
 sudo python install.py
 ```
 

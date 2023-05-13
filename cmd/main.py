@@ -21,11 +21,11 @@ def check_root():
         exit(os.EX_NOPERM)
 
 
-def gen_config(filename: str | Path):
+def gen_config(filename: typing.Union[str, Path]):
     write_file(filename, EXAMPLE_CONFIG_FILE)
 
 
-def gen_config_interactive(filename: str | Path):
+def gen_config_interactive(filename: typing.Union[str, Path]):
     print('选择 let\'s encrypt API')
     opt = [f'{PRODUCTION_URL} (生产环境)',
            f'{STAGING_URL} (测试环境)']
