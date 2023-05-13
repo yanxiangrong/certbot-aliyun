@@ -140,7 +140,7 @@ def main():
     version_name = get_version()
 
     src_url = f'https://github.com/{USER}/{REPO}/archive/refs/tags/{version_name}.tar.gz'
-    src_url = f'https://github.com/yanxiangrong/certbot-aliyun/archive/refs/tags/v1.0.0-pre-alpha.tar.gz'
+    src_url = f'https://github.com/yanxiangrong/certbot-aliyun/archive/refs/tags/v1.0.0-pre-alpha.1.tar.gz'
     save_file = download(src_url, tmp_dir.name)
 
     print(f'Extract {save_file}')
