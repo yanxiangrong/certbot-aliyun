@@ -2,8 +2,8 @@ import logging
 import sys
 from pathlib import Path
 
-from .config import load_config, app_config, domain_config
 from .acme_client import ACMEClient
+from .config import load_config, app_config, domain_config
 from .consts import *
 
 log = logging.getLogger(__name__)
@@ -39,7 +39,7 @@ def save_key_comp(save_dir: str, pkey_pem: bytes, fullchain_pem: bytes):
         f.write(fullchain_pem)
 
 
-def load_key_comp(save_dir: str,):
+def load_key_comp(save_dir: str):
     pkey_file = Path(save_dir).joinpath(PKEY_FILENAME)
     fullchain_file = Path(save_dir).joinpath(FULLCHAIN_FILENAME)
     log.info(f'Load private key from {pkey_file}')
@@ -83,6 +83,7 @@ def main():
         save_key_comp(i_config.save_dir, pkey_pem, fullchain_pem)
 
     log.info('Done and exit')
+
 
 if __name__ == '__main__':
     main()

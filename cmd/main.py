@@ -2,7 +2,6 @@ import argparse
 import subprocess
 import sys
 
-import app
 from .consts import *
 from .utils import *
 
@@ -59,7 +58,7 @@ def gen_config_interactive(filename: typing.Union[str, Path]):
 
 def gen_service(config_path: str, save_dir: str = '.'):
     filename = Path(save_dir).joinpath(service_filename)
-    data = EXAMPLE_SERVICE_FILE.format(wd=f'{run_maim_file.parent}',
+    data = EXAMPLE_SERVICE_FILE.format(wd=f'{run_maim_file.parent.absolute()}',
                                        exec=f'{run_maim_file.absolute()} -c {Path(config_path).absolute()}')
     write_file(filename, data, re_name=False)
 
@@ -86,11 +85,15 @@ def gen_systemd(config_path: str, is_install: bool = False, user: bool = False):
 def install(interactive=False):
     check_root()
 
-    copy(run_maim_file.parent, INSTALL_DEP_PATH)
+    if run_maim_file.parent != Path(INSTALL_DEP_PATH):
+        copy(run_maim_file.parent, INSTALL_DEP_PATH)
+        ret = subprocess.run([sys.executable, Path(INSTALL_DEP_PATH).joinpath(run_maim_file.name)] + sys.argv[1:])
+        exit(ret)
+
     link_file = Path(INSTALL_DEP_PATH).joinpath(run_maim_file.name)
-    link(link_file, bin_filename)
-    print(f'chmod 755 {run_maim_file}')
+    print(f'chmod 755 {link_file}')
     link_file.chmod(755)
+    link(link_file, bin_filename)
 
     install_venv(Path(INSTALL_DEP_PATH))
 
@@ -102,8 +105,8 @@ def install(interactive=False):
 
     Systemctl.reload()
     Systemctl.enable(timer_filename)
-    Systemctl.start(service_filename)
     Systemctl.start(timer_filename)
+    Systemctl.start(service_filename)
 
 
 def uninstall():
@@ -141,6 +144,7 @@ def run():
             install_venv()
         ret = subprocess.run([str(venv_python.absolute())] + sys.argv)
         exit(ret.returncode)
+    import app
     app.main()
 
 

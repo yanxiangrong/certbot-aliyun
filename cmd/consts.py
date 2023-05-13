@@ -46,7 +46,7 @@ save_dir = save/{domain}
 '''
 
 EXAMPLE_SERVICE_FILE = '''[Unit]
-Description=Certbot--维护 SSL证书
+Description=Certbot--SSL certificate
 Wants=network.target network-online.target
 After=network.target network-online.target
 
@@ -57,7 +57,7 @@ ExecStart={exec}
 '''
 
 EXAMPLE_TIMER_FILE = '''[Unit]
-Description=Certbot--维护 SSL证书
+Description=Certbot--SSL certificate
 
 [Timer]
 OnCalendar=*-1,3,5,7,9,11-01 02:00:00
