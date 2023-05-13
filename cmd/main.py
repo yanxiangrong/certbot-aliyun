@@ -155,22 +155,21 @@ def main():
     parser.add_argument('-c', dest='config', default=f'./{CONFIG_FILENAME}')
     args = parser.parse_args()
 
-    match args.option:
-        case None:
-            run()
-        case 'gen-config':
-            gen_config(args.config)
-        case 'gen-config-i':
-            gen_config_interactive(args.config)
-        case 'gen-systemd':
-            gen_systemd(args.config)
-        case 'gen-systemd-i':
-            gen_systemd(args.config, is_install=True)
-        case 'gen-systemd-i-u':
-            gen_systemd(args.config, is_install=True, user=True)
-        case 'install':
-            install()
-        case 'install-i':
-            install(interactive=True)
-        case 'uninstall':
-            uninstall()
+    if args.option is None:
+        run()
+    elif args.option == 'gen-config':
+        gen_config(args.config)
+    elif args.option == 'gen-config-i':
+        gen_config_interactive(args.config)
+    elif args.option == 'gen-systemd':
+        gen_systemd(args.config)
+    elif args.option == 'gen-systemd-i':
+        gen_systemd(args.config, is_install=True)
+    elif args.option == 'gen-systemd-i-u':
+        gen_systemd(args.config, is_install=True, user=True)
+    elif args.option == 'install':
+        install()
+    elif args.option == 'install-i':
+        install(interactive=True)
+    elif args.option == 'uninstall':
+        uninstall()

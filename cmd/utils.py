@@ -88,15 +88,14 @@ def input_yes_no(pmt: str) -> bool:
         if len(ret) == 0:
             continue
         ret = ret.lower()
-        match ret:
-            case 'yes':
-                return True
-            case 'y':
-                return True
-            case 'no':
-                return False
-            case 'n':
-                return False
+        if ret == 'yes':
+            return True
+        if ret == 'y':
+            return True
+        if ret == 'no':
+            return False
+        if ret == 'n':
+            return False
 
 
 def input_select(sel: str, opt: list[str]):
